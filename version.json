@@ -1,5 +1,5 @@
 {
   "version": "3.78",
   "url": "https://github.com/jgyunam-dot/gap/releases/download/GAP/GAP_378.zip",
-  "changelog": "[v3.78 업데이트 내역]\n- 라이트모드/다크보드 기능추가\n- 배터리 정보 기능추가"
+  "changelog": "[v3.78 업데이트 내역]\n- 라이트모드/다크보드 기능추가\n- 저장장치 배드섹터 검사 기능추가\n- 배터리 정보 기능추가\n- 이벤트뷰어 기능추가\n- BIOS 온라인 업데이트 기능추가(20년도~)"
 }
