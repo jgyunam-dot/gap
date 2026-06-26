@@ -1,5 +1,5 @@
 {
-  "version": "3.77",
-  "url": "https://github.com/jgyunam-dot/gap/releases/download/GAP/GAP_377.zip",
-  "changelog": "[v3.77 업데이트 내역]\n- SSD 검사기능 추가\n- 이벤트 로그기능 추가"
+  "version": "3.78",
+  "url": "https://github.com/jgyunam-dot/gap/releases/download/GAP/GAP_378.zip",
+  "changelog": "[v3.78 업데이트 내역]\n- 라이트모드/다크보드 기능추가\n- 배터리 정보 기능추가"
 }
