@@ -1,5 +1,5 @@
 {
-  "version": "3.83",
-  "url": "https://github.com/jgyunam-dot/gap/releases/download/GAP/GAP_383.zip",
-  "changelog": "[v3.83 업데이트 내역]\n- 데스크탑 모델/제번 입력기능 추가\n- BSOD 분석기 인앱내장"
+  "version": "3.84",
+  "url": "https://github.com/jgyunam-dot/gap/releases/download/GAP/GAP_384.zip",
+  "changelog": "[v3.84 업데이트 내역]\n- 데스크탑 모델/제번 입력기능 추가\n- BSOD 분석기 인앱내장\n- 메인보드 교체 후 모델정보 없을시 팝업창 수동입력 기능추가"
 }
