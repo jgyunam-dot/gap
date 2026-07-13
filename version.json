@@ -1,5 +1,5 @@
 {
-  "version": "3.91",
-  "url": "https://github.com/jgyunam-dot/gap/releases/download/GAP/GAP_391.zip",
-  "changelog": "[v3.91 업데이트 내역]\n- 데스크탑 모델/제번 입력기능 추가\n- BSOD 분석기 인앱내장\n- 메인보드 교체 후 모델정보 없을시 팝업창 수동입력 기능추가\n- 온라인 BIOS 업데이트 18년~26년 지원\n- 에이징 테스트 기능추가"
+  "version": "3.92",
+  "url": "https://github.com/jgyunam-dot/gap/releases/download/GAP/GAP_392.zip",
+  "changelog": "[v3.92 업데이트 내역]\n- 데스크탑 모델/제번 입력기능 추가\n- BSOD 분석기 인앱내장\n- 메인보드 교체 후 모델정보 없을시 팝업창 수동입력 기능추가\n- 온라인 BIOS 업데이트 18년~26년 지원\n- 에이징 테스트 기능추가"
 }
