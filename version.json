@@ -1,5 +1,5 @@
 {
-  "version": "3.95",
-  "url": "https://github.com/jgyunam-dot/gap/releases/download/GAP/GAP_395.zip",
-  "changelog": "[v3.95 업데이트 내역]\n- PC 점검하기 기능추가\n- PC 상세정보 기능추가\n- CPU온도 배터리 상태 실시간 그래프 표시\n- 온라인 BIOS 업데이트 17년~26년 지원\n- 에이징 테스트 기능추가\n- 배터리 정보 FCC 오표기 버그수정"
+  "version": "3.96",
+  "url": "https://github.com/jgyunam-dot/gap/releases/download/GAP/GAP_396.zip",
+  "changelog": "[v3.96 업데이트 내역]\n- PC 점검하기 기능추가\n- PC 상세정보 기능추가\n- CPU온도 배터리 상태 실시간 그래프 표시\n- 온라인 BIOS 업데이트 17년~26년 지원\n- 에이징 테스트 기능추가\n- 배터리 정보 FCC 오표기 버그수정\n- 포트 연결상태 기능추가"
 }
