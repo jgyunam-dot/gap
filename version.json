@@ -1,5 +1,5 @@
 {
-  "version": "4.01",
+  "version": "4.02",
   "url": "https://github.com/jgyunam-dot/gap/releases/download/GAP/GAP_401.zip",
-  "changelog": "[v4.01 업데이트 내역]\n- 롬라이팅 기능수정"
+  "changelog": "[v4.02 업데이트 내역]\n- 데스크탑 모델/제번 입력 온라인 기능추가"
 }
