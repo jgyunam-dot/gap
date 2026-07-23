@@ -1,5 +1,5 @@
 {
-  "version": "4.02",
-  "url": "https://github.com/jgyunam-dot/gap/releases/download/GAP/GAP_402.zip",
-  "changelog": "[v4.02 업데이트 내역]\n- 데스크탑 모델/제번 입력 온라인 기능추가"
+  "version": "4.03",
+  "url": "https://github.com/jgyunam-dot/gap/releases/download/GAP/GAP_403.zip",
+  "changelog": "[v4.03 업데이트 내역]\n- 보안 지우개 기능추가"
 }
