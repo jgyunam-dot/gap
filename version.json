@@ -1,5 +1,5 @@
 {
-  "version": "4.06",
-  "url": "https://github.com/jgyunam-dot/gap/releases/download/GAP/GAP_406.zip",
-  "changelog": "[v4.06 업데이트 내역]\n- DPK 정품인증 도구 통합 (BETA) : 체크·인증·삭제 인앱 지원\n- 윈도우 암호 해제 : PE 전용 (PE 차후 배포)\n- 보안지우개 백신 삭제기능 추가\n- 사이드메뉴 스크롤바 추가"
+  "version": "4.07",
+  "url": "https://github.com/jgyunam-dot/gap/releases/download/GAP/GAP_407.zip",
+  "changelog": "[v4.07 업데이트 내역]\n- 보안 지우개 : 백신(안티바이러스) 항목 추가 및 보안 프로그램/백신 탭 분리\n- PC 상세정보 : 점진적 로딩 적용 (완료되는 항목부터 즉시 표시)\n- BIOS 업데이트 : 최신버전에서 강제 업데이트 지원"
 }
