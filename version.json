@@ -1,5 +1,5 @@
 {
-  "version": "4.07",
-  "url": "https://github.com/jgyunam-dot/gap/releases/download/GAP/GAP_407.zip",
-  "changelog": "[v4.07 업데이트 내역]\n- 보안 지우개 : 백신(안티바이러스) 항목 추가 및 보안 프로그램/백신 탭 분리\n- PC 상세정보 : 점진적 로딩 적용 (완료되는 항목부터 즉시 표시)\n- BIOS 업데이트 : 최신버전에서 강제 업데이트 지원"
+  "version": "4.08",
+  "url": "https://github.com/jgyunam-dot/gap/releases/download/GAP/GAP_408.zip",
+  "changelog": "[v4.08 업데이트 내역]\n- 보안 지우개 : 백신(안티바이러스) 항목 추가 및 보안 프로그램/백신 탭 분리\n- PC 상세정보 : 점진적 로딩 적용 (완료되는 항목부터 즉시 표시)\n- BIOS 업데이트 : 최신버전에서 강제 업데이트 지원"
 }
