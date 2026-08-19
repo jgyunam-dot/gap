@@ -1,5 +1,5 @@
 {
-  "version": "4.09",
-  "url": "https://github.com/jgyunam-dot/gap/releases/download/GAP/GAP_409.zip",
-  "changelog": "[v4.09 업데이트 내역]\n- PC 상세정보(PE) : 네트워크·포트 연결상태·전원 사용이력 표시 추가\n- PC 상세정보(PE) : CPU·메모리 사용률 실시간 갱신 추가 (포트·네트워크는 6초 주기)\n- 드라이버 로드(PE) : 불러오기 전 '기타 장치' 제거 후 하드웨어 재검색 옵션 추가\n- 카메라 점검(PE) : IR 센서는 장치 인식 결과로 표시 (영상은 Windows에서 확인)\n- PE 실행 시 창 크기를 1460x1050 으로 변경\n- 만든이 창에서 개발자 이름 클릭 시 Windows 에서도 PE 모드로 실행 가능"
+  "version": "4.10",
+  "url": "https://github.com/jgyunam-dot/gap/releases/download/GAP/GAP_410.zip",
+  "changelog": "[v4.10 업데이트 내역]\n- PC 상세정보(PE) : 네트워크·포트 연결상태·전원 사용이력 표시 추가\n- PC 상세정보(PE) : CPU·메모리 사용률 실시간 갱신 추가 (포트·네트워크는 6초 주기)\n- 드라이버 로드(PE) : 불러오기 전 '기타 장치' 제거 후 하드웨어 재검색 옵션 추가\n- 카메라 점검(PE) : IR 센서는 장치 인식 결과로 표시 (영상은 Windows에서 확인)\n- PE 실행 시 창 크기를 1460x1050 으로 변경\n- 만든이 창에서 개발자 이름 클릭 시 Windows 에서도 PE 모드로 실행 가능"
 }
