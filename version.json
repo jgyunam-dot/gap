@@ -1,5 +1,5 @@
 {
-  "version": "4.12",
-  "url": "https://github.com/jgyunam-dot/gap/releases/download/GAP/GAP_412.zip",
-  "changelog": "[v4.12 업데이트 내역]\n- 앱 개선 의견보내기 버튼추가\n- 디스크 정보 버그가 수정되었습니다\n- 디스크 정보가 실시간으로 동기화 됩니다\n- PE모드에서 동작되도록 업데이트 되었습니다\n- GAP 지원되는 PE는 청주센터 강희국님에게 문의하세요"
+  "version": "4.13",
+  "url": "https://github.com/jgyunam-dot/gap/releases/download/GAP/GAP_413.zip",
+  "changelog": "[v4.13 업데이트 내역]\n- 앱 개선 의견보내기 버튼추가\n- 앱 알림기능 추가"
 }
