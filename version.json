@@ -1,5 +1,5 @@
 {
-  "version": "4.17",
-  "url": "https://liu.lge.com/SmartBIOS/GAP/GAP_417.ZIP",
-  "changelog": "[v4.17 업데이트 내역]\n- 홈 메뉴에 타자대결 기능추가\n- 사용자 관리 인증 보안 기능 추가\n- 메모리 상세 슬롯 정보 기능 추가\n- CPU 온도, FAN 점검 미지원 모델 등록 추가\n- BIOS 업데이트 TDK 에러 패치 기능 추가\n- 블루투스 주변 검색 시 한글 이름 깨짐 에러 수정\n- 앱 해상도, DPI 설정 기능 추가\n- 앱 로딩 속도 개선"
+  "version": "4.19",
+  "url": "https://liu.lge.com/SmartBIOS/GAP/GAP_419.ZIP",
+  "changelog": "[v4.19 업데이트 내역]\n- 버그수정\n- 앱 로딩 속도 개선"
 }
