@@ -1,5 +1,5 @@
 {
-  "version": "4.21",
-  "url": "https://liu.lge.com/SmartBIOS/GAP/GAP_421.ZIP",
-  "changelog": "[v4.21 업데이트 내역]\n- 디스크 속도 측정 기능추가\n- 디스크 타입 정보 추가\n- 앱 기본 해상도 조정\n- 앱 DPI 100%이하 추가\n- 버그수정 및 앱 기능향상"
+  "version": "4.22",
+  "url": "https://liu.lge.com/SmartBIOS/GAP/GAP_422.ZIP",
+  "changelog": "[v4.22 업데이트 내역]\n- 온라인/오프라인 바이오스 업데이트 2027년도 모델지원"
 }
