@@ -1,5 +1,5 @@
 {
   "version": "20260902",
-  "url": "https://github.com/jgyunam-dot/gap/releases/download/GAP/BIOS.zip",
-  "changelog": "최초 배포"
+  "url": "https://liu.lge.com/SmartBIOS/GAP/BIOS.ZIP",
+  "changelog": "ModelDataFile 모델추가/n - 15UB470 오프라인 모델/제번 변경 버그수정"
 }
