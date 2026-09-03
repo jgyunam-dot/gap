@@ -1,5 +1,5 @@
 {
-  "version": "20260902",
+  "version": "20260903",
   "url": "https://liu.lge.com/SmartBIOS/GAP/BIOS.ZIP",
-  "changelog": "[v20260902 업데이트 내역]\n- 15UB470 오프라인 모델/제번 변경 버그수정"
+  "changelog": "[v20260903 업데이트 내역]\n- 신규 141U40V 바이오스 온라인/오프라인 추가"
 }
