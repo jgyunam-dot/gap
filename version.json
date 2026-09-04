@@ -1,5 +1,5 @@
 {
-  "version": "4.22",
-  "url": "https://liu.lge.com/SmartBIOS/GAP/GAP_422.ZIP",
-  "changelog": "[v4.22 업데이트 내역]\n- 온라인/오프라인 바이오스 업데이트 2027년도 모델지원"
+  "version": "4.23",
+  "url": "https://liu.lge.com/SmartBIOS/GAP/GAP_423.ZIP",
+  "changelog": "[v4.23 업데이트 내역]\n- 키보드 테스트에 키보드 조명 켜기/끄기 기능추가\n- 스킨추가"
 }
