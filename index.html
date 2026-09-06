@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>gram Analyzer Pro — 로그인</title>
+    <link rel="icon" type="image/png" href="ico.png">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+    <link rel="stylesheet" href="assets/theme.css">
+    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.4.4/build/qrcode.min.js"></script>
+    <style>
+        /* 로그인 페이지 전용 레이아웃 — 좌측 브랜드 패널 + 우측 인증 카드 */
+        body { height: 100vh; overflow: hidden; }
+
+        .auth { display: grid; grid-template-columns: 1.15fr 1fr; height: 100vh; }
+
+        /* ── 좌측 브랜드 ── */
+        .auth-brand {
+            position: relative; overflow: hidden;
+            padding: 60px 64px;
+            display: flex; flex-direction: column; justify-content: space-between;
+            background:
+                radial-gradient(1000px 620px at 12% 8%, rgba(255, 75, 92, .20), transparent 60%),
+                radial-gradient(900px 600px at 88% 92%, rgba(79, 195, 247, .16), transparent 62%),
+                var(--bg-panel);
+            border-right: 1px solid var(--border-color);
+        }
+        /* 은은한 격자 — 계측 장비 느낌 */
+        .auth-brand::after {
+            content: ''; position: absolute; inset: 0; pointer-events: none;
+            background-image: linear-gradient(var(--border-color) 1px, transparent 1px),
+                              linear-gradient(90deg, var(--border-color) 1px, transparent 1px);
+            background-size: 46px 46px;
+            opacity: .28;
+            mask-image: radial-gradient(circle at 30% 40%, #000 0%, transparent 72%);
+            -webkit-mask-image: radial-gradient(circle at 30% 40%, #000 0%, transparent 72%);
+        }
+        .auth-brand > * { position: relative; z-index: 1; }
+
+        .auth-logo { display: flex; align-items: center; gap: 12px; }
+        /* 앱 아이콘 자체가 배경·테두리를 갖고 있어 별도 배경 없이 그대로 얹는다 */
+        .auth-logo .mark {
+            width: 46px; height: 46px; border-radius: 12px; overflow: hidden;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, .38);
+        }
+        .auth-logo .mark img { width: 100%; height: 100%; object-fit: cover; display: block; }
+        .auth-logo b { font-size: 17px; font-weight: 800; letter-spacing: -.2px; }
+        .auth-logo span { display: block; font-size: 11.5px; color: var(--text-sub); letter-spacing: 1.6px; }
+
+        .auth-copy h2 { font-size: 40px; line-height: 1.24; font-weight: 800; letter-spacing: -1.2px; margin: 0 0 16px; }
+        .auth-copy h2 em { font-style: normal; color: var(--lg-red); }
+        .auth-copy p { font-size: 14.5px; color: var(--text-sub); line-height: 1.75; margin: 0 0 30px; max-width: 460px; }
+
+        .auth-points { display: flex; flex-direction: column; gap: 13px; }
+        .auth-point { display: flex; align-items: center; gap: 12px; font-size: 13.5px; color: var(--text-main); }
+        .auth-point i {
+            width: 32px; height: 32px; flex: 0 0 32px; border-radius: 9px; display: grid; place-items: center;
+            background: var(--bg-base); border: 1px solid var(--border-color); color: var(--lg-blue);
+        }
+        .auth-point i .material-symbols-outlined { font-size: 18px; }
+        .auth-point small { color: var(--text-sub); }
+
+        .auth-foot { font-size: 12px; color: var(--text-sub); }
+
+        /* ── 우측 인증 카드 ── */
+        .auth-panel { display: grid; place-items: center; padding: 40px 32px; background: var(--bg-base); }
+        .auth-card { width: 100%; max-width: 380px; }
+        .auth-card h1 { font-size: 24px; font-weight: 800; letter-spacing: -.6px; margin: 0 0 6px; }
+        .auth-card .lead { font-size: 13.5px; color: var(--text-sub); margin: 0 0 28px; }
+
+        .field { margin-bottom: 14px; }
+        .field label { display: block; font-size: 12px; font-weight: 700; color: var(--text-sub); margin-bottom: 7px; }
+        .field .wrap { position: relative; }
+        .field .wrap .material-symbols-outlined {
+            position: absolute; left: 13px; top: 50%; transform: translateY(-50%);
+            font-size: 19px; color: var(--text-sub); pointer-events: none;
+        }
+        .field input {
+            width: 100%; box-sizing: border-box; height: 46px; padding: 0 14px 0 42px;
+            background: var(--bg-panel); color: var(--text-main);
+            border: 1px solid var(--border-color); border-radius: 10px;
+            font-size: 14px; outline: none; transition: border-color .15s, box-shadow .15s;
+        }
+        .field input:focus { border-color: var(--lg-red); box-shadow: 0 0 0 3px rgba(255, 75, 92, .16); }
+
+        .btn-auth {
+            width: 100%; height: 48px; margin-top: 6px;
+            display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+            background: var(--lg-red); color: #fff; border: none; border-radius: 10px;
+            font-size: 15px; font-weight: 700; cursor: pointer; transition: filter .15s, transform .06s;
+        }
+        .btn-auth:hover { filter: brightness(1.08); }
+        .btn-auth:active { transform: translateY(1px); }
+        .btn-auth:disabled { opacity: .55; cursor: not-allowed; }
+        .btn-auth.alt { background: var(--lg-blue); color: #06283a; }
+        /* 라이트 모드에서는 파랑이 진해지므로 글자를 흰색으로 뒤집는다 */
+        body.light-mode .btn-auth.alt { color: #fff; }
+        .btn-auth.quiet { background: transparent; border: 1px solid var(--border-color); color: var(--text-main); margin-top: 10px; }
+        .btn-auth.quiet:hover { background: var(--bg-hover); filter: none; }
+
+        .auth-links { display: flex; justify-content: center; align-items: center; gap: 10px; margin-top: 18px; font-size: 13px; }
+        .auth-links .sep { color: var(--text-sub); opacity: .5; }
+        .auth-links a { color: var(--text-sub); text-decoration: none; cursor: pointer; }
+        .auth-links a:hover { color: var(--lg-blue); }
+
+        .msg { font-size: 12.5px; min-height: 18px; margin-bottom: 12px; font-weight: 600; }
+        .msg.error   { color: var(--lg-red); }
+        .msg.success { color: var(--lg-green); }
+        .msg.loading { color: var(--lg-blue); }
+
+        .view-section { display: none; animation: fadeIn .35s ease; }
+        .view-section.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+
+        @media (max-width: 980px) {
+            body { overflow: auto; }
+            .auth { grid-template-columns: 1fr; height: auto; min-height: 100vh; }
+            .auth-brand { padding: 36px 28px; gap: 28px; }
+            .auth-copy h2 { font-size: 29px; }
+            .auth-panel { padding: 36px 24px 56px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="auth">
+
+    <!-- ── 브랜드 ── -->
+    <section class="auth-brand">
+        <div class="auth-logo">
+            <div class="mark"><img src="ico.png" alt="gram Analyzer Pro"></div>
+            <div>
+                <b>gram Analyzer Pro</b>
+                <span>SERVICE CONSOLE</span>
+            </div>
+        </div>
+
+        <div class="auth-copy">
+            <h2>현장의 진단 데이터를<br><em>한 화면에서</em> 관리합니다.</h2>
+            <p>서비스매니저의 앱 사용 현황, 기능별 활용도, 센터별 지표를 실시간으로 집계합니다.
+               계정 · 사원 명단 · 공지 · 피드백까지 관리자 콘솔에서 함께 처리하세요.</p>
+
+            <div class="auth-points">
+                <div class="auth-point">
+                    <i><span class="material-symbols-outlined">monitoring</span></i>
+                    <div>실시간 사용 지표 <small>· 실행 추이, TOP 10, 기능별 비중</small></div>
+                </div>
+                <div class="auth-point">
+                    <i><span class="material-symbols-outlined">manage_accounts</span></i>
+                    <div>통합 관리자 콘솔 <small>· 계정, 사원 명단, 공지, 피드백</small></div>
+                </div>
+                <div class="auth-point">
+                    <i><span class="material-symbols-outlined">verified_user</span></i>
+                    <div>권한 기반 접근 <small>· 관리 활동은 감사 로그에 기록</small></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="auth-foot">&copy; 2026 gyunam Jeon. All rights reserved.</div>
+    </section>
+
+    <!-- ── 인증 ── -->
+    <section class="auth-panel">
+        <div class="auth-card">
+
+            <!-- 로그인 -->
+            <div id="viewLogin" class="view-section active">
+                <h1>로그인</h1>
+                <p class="lead">발급받은 계정으로 접속하세요.</p>
+                <div class="msg" id="loginMsg"></div>
+
+                <div class="field">
+                    <label for="loginId">아이디</label>
+                    <div class="wrap">
+                        <span class="material-symbols-outlined">person</span>
+                        <input type="text" id="loginId" placeholder="사번 또는 아이디" autocomplete="username">
+                    </div>
+                </div>
+                <div class="field">
+                    <label for="loginPw">비밀번호</label>
+                    <div class="wrap">
+                        <span class="material-symbols-outlined">lock</span>
+                        <input type="password" id="loginPw" placeholder="비밀번호" autocomplete="current-password">
+                    </div>
+                </div>
+
+                <button class="btn-auth" id="btnLogin" onclick="doLogin()">
+                    <span class="material-symbols-outlined">login</span> 로그인
+                </button>
+                <div class="auth-links">
+                    <a onclick="switchView('viewChangePw')">비밀번호 변경</a>
+                    <span class="sep">·</span>
+                    <a onclick="openOtpManage()">OTP 2단계 인증 설정</a>
+                </div>
+            </div>
+
+            <!-- 비밀번호 변경 -->
+            <div id="viewChangePw" class="view-section">
+                <h1>비밀번호 변경</h1>
+                <p class="lead">계정을 안전하게 보호하세요.</p>
+                <div class="msg" id="pwMsg"></div>
+
+                <div class="field">
+                    <label for="cpwId">아이디</label>
+                    <div class="wrap">
+                        <span class="material-symbols-outlined">person</span>
+                        <input type="text" id="cpwId" placeholder="사번 또는 아이디">
+                    </div>
+                </div>
+                <div class="field">
+                    <label for="cpwOld">현재 비밀번호</label>
+                    <div class="wrap">
+                        <span class="material-symbols-outlined">lock</span>
+                        <input type="password" id="cpwOld" placeholder="현재 비밀번호">
+                    </div>
+                </div>
+                <div class="field">
+                    <label for="cpwNew">새 비밀번호</label>
+                    <div class="wrap">
+                        <span class="material-symbols-outlined">key</span>
+                        <input type="password" id="cpwNew" placeholder="4자리 이상">
+                    </div>
+                </div>
+
+                <button class="btn-auth alt" id="btnChangePw" onclick="changePassword()">
+                    <span class="material-symbols-outlined">lock_reset</span> 변경하기
+                </button>
+                <button class="btn-auth quiet" onclick="switchView('viewLogin')">뒤로 가기</button>
+            </div>
+
+            <!-- OTP 설정 (선택 — 로그인 화면의 "OTP 2단계 인증 설정"에서 최초 1회 등록) -->
+            <div id="viewOtpSetup" class="view-section">
+                <h1>OTP 설정</h1>
+                <p class="lead">구글 OTP(Google Authenticator)를 등록합니다.</p>
+                <div class="msg" id="otpSetupMsg"></div>
+
+                <div style="display:flex; justify-content:center; margin-bottom:16px;">
+                    <canvas id="otpQrCanvas"></canvas>
+                </div>
+                <div class="field">
+                    <label for="otpSecretText">수동 등록 키</label>
+                    <div class="wrap">
+                        <span class="material-symbols-outlined">key</span>
+                        <input type="text" id="otpSecretText" readonly>
+                    </div>
+                </div>
+                <div class="field">
+                    <label for="otpSetupCode">Google Authenticator 앱에 표시된 6자리 코드</label>
+                    <div class="wrap">
+                        <span class="material-symbols-outlined">password</span>
+                        <input type="text" id="otpSetupCode" placeholder="6자리 코드" inputmode="numeric" maxlength="6" autocomplete="one-time-code">
+                    </div>
+                </div>
+
+                <button class="btn-auth" id="btnOtpSetupConfirm" onclick="confirmOtpSetup()">
+                    <span class="material-symbols-outlined">verified_user</span> 등록 완료
+                </button>
+                <button class="btn-auth quiet" onclick="cancelPendingLogin()">취소</button>
+            </div>
+
+            <!-- OTP 인증 -->
+            <div id="viewOtpVerify" class="view-section">
+                <h1>OTP 인증</h1>
+                <p class="lead">Google Authenticator 앱의 6자리 코드를 입력하세요.</p>
+                <div class="msg" id="otpVerifyMsg"></div>
+
+                <div class="field">
+                    <label for="otpVerifyCode">인증 코드</label>
+                    <div class="wrap">
+                        <span class="material-symbols-outlined">password</span>
+                        <input type="text" id="otpVerifyCode" placeholder="6자리 코드" inputmode="numeric" maxlength="6" autocomplete="one-time-code">
+                    </div>
+                </div>
+
+                <button class="btn-auth" id="btnOtpVerify" onclick="verifyOtpAndLogin()">
+                    <span class="material-symbols-outlined">login</span> 확인
+                </button>
+                <button class="btn-auth quiet" onclick="cancelPendingLogin()">취소</button>
+            </div>
+
+            <!-- 초기 비밀번호 강제 변경 (신규 발급 계정 첫 로그인 / 비밀번호 초기화 직후) -->
+            <div id="viewForcePwChange" class="view-section">
+                <h1>비밀번호 변경 필요</h1>
+                <p class="lead">초기 비밀번호를 계속 사용할 수 없습니다. 새 비밀번호를 설정해주세요.</p>
+                <div class="msg" id="forcePwMsg"></div>
+
+                <div class="field">
+                    <label for="forcePwNew">새 비밀번호</label>
+                    <div class="wrap">
+                        <span class="material-symbols-outlined">key</span>
+                        <input type="password" id="forcePwNew" placeholder="4자리 이상">
+                    </div>
+                </div>
+
+                <button class="btn-auth" id="btnForcePwChange" onclick="confirmForcePwChange()">
+                    <span class="material-symbols-outlined">lock_reset</span> 변경하고 계속하기
+                </button>
+                <button class="btn-auth quiet" onclick="cancelPendingLogin()">취소</button>
+            </div>
+
+            <!-- OTP 2단계 인증 관리 (선택 — 본인 확인 후 켜거나 끈다) -->
+            <div id="viewOtpManage" class="view-section">
+                <h1>OTP 2단계 인증</h1>
+                <p class="lead">선택 기능입니다. 계정 비밀번호로 본인 확인 후 켜거나 끌 수 있습니다.</p>
+                <div class="msg" id="otpManageMsg"></div>
+
+                <div id="otpManageAuthStep">
+                    <div class="field">
+                        <label for="omId">아이디</label>
+                        <div class="wrap">
+                            <span class="material-symbols-outlined">person</span>
+                            <input type="text" id="omId" placeholder="사번 또는 아이디" autocomplete="username">
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label for="omPw">현재 비밀번호</label>
+                        <div class="wrap">
+                            <span class="material-symbols-outlined">lock</span>
+                            <input type="password" id="omPw" placeholder="현재 비밀번호" autocomplete="current-password">
+                        </div>
+                    </div>
+                    <button class="btn-auth" id="btnOtpManageCheck" onclick="checkOtpManageStatus()">
+                        <span class="material-symbols-outlined">verified_user</span> 확인
+                    </button>
+                </div>
+
+                <div id="otpManageActionStep" style="display:none;">
+                    <p class="lead" id="otpManageStatusText"></p>
+                    <button class="btn-auth" id="btnOtpManageEnable" style="display:none;" onclick="startOtpManageEnable()">
+                        <span class="material-symbols-outlined">add_moderator</span> OTP 설정하기
+                    </button>
+                    <button class="btn-auth alt" id="btnOtpManageDisable" style="display:none;" onclick="disableOtpManage()">
+                        <span class="material-symbols-outlined">remove_moderator</span> OTP 해제하기
+                    </button>
+                </div>
+
+                <button class="btn-auth quiet" onclick="switchView('viewLogin')">뒤로 가기</button>
+            </div>
+
+        </div>
+    </section>
+</div>
+
+<script src="assets/common.js"></script>
+<script src="assets/totp.js"></script>
+<script>
+    /* 대시보드에서 고른 테마를 로그인 화면에도 그대로 적용한다. */
+    initTheme();
+
+    // OTP 인증이 남은 로그인 시도 상태. 아이디/비번 확인 후 OTP·강제 비밀번호 변경 화면으로 넘어갈 때만 채워진다.
+    let pendingLoginUser = null;    // OTP 입력을 기다리는 사용자(아직 세션에 반영 안 됨) — OTP 관리 화면에서도 같이 쓴다.
+    let pendingNewSecret = null;    // OTP 최초 설정 중 발급한 시크릿(확인 전까지 미저장)
+    let pendingForcePwToken = null; // 강제 비밀번호 변경에 쓸 idToken(로그인 때 받은 걸 그대로 재사용 — 비번 재입력 안 받음)
+
+    // 이 화면들끼리 오가는 동안은 진행 중이던 로그인/본인확인 시도를 유지한다.
+    const PENDING_FLOW_VIEWS = ['viewOtpSetup', 'viewOtpVerify', 'viewForcePwChange', 'viewOtpManage'];
+
+    function switchView(viewId) {
+        if (!PENDING_FLOW_VIEWS.includes(viewId)) {
+            pendingLoginUser = null;
+            pendingNewSecret = null;
+            pendingForcePwToken = null;
+        }
+        document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
+        document.getElementById(viewId).classList.add('active');
+        document.querySelectorAll('input').forEach(el => el.value = '');
+        document.querySelectorAll('.msg').forEach(el => { el.innerText = ''; el.className = 'msg'; });
+    }
+
+    /** 로그인 화면의 "OTP 2단계 인증 설정" 링크 — 이전에 확인했던 상태가 남아있지 않도록 초기화하고 연다. */
+    function openOtpManage() {
+        switchView('viewOtpManage');
+        document.getElementById('otpManageAuthStep').style.display = 'block';
+        document.getElementById('otpManageActionStep').style.display = 'none';
+    }
+
+    function cancelPendingLogin() {
+        switchView('viewLogin');
+    }
+
+    function showMsg(elementId, text, type = 'error') {
+        const el = document.getElementById(elementId);
+        el.innerText = text;
+        el.className = 'msg ' + type;
+    }
+
+    async function doLogin() {
+        const id = document.getElementById('loginId').value.trim();
+        const pw = document.getElementById('loginPw').value.trim();
+        const btn = document.getElementById('btnLogin');
+
+        if (!id || !pw) return showMsg('loginMsg', '아이디와 비밀번호를 입력해주세요.');
+
+        btn.disabled = true;
+        showMsg('loginMsg', '로그인 확인 중...', 'loading');
+
+        const authData = await firebaseSignIn(id, pw);
+        if (!authData) {
+            btn.disabled = false;
+            return showMsg('loginMsg', '아이디 또는 비밀번호가 일치하지 않습니다.', 'error');
+        }
+
+        // 이 시점부터는 이 토큰으로 인증된 요청이 가능하다 — 계정의 역할·권한 정보를 읽어온다.
+        establishAuthSession(authData.idToken, authData.refreshToken, authData.localId);
+
+        let roleData;
+        try { roleData = await (await fetch(authDbUrl(`user_roles/${authData.localId}`))).json(); }
+        catch (e) { roleData = null; }
+
+        btn.disabled = false;
+
+        if (!roleData) return showMsg('loginMsg', '계정 정보를 찾을 수 없습니다. 관리자에게 문의해주세요.', 'error');
+
+        const user = {
+            id: roleData.originalId, uid: authData.localId, role: roleData.role,
+            perms: roleData.perms || {}, totpSecret: roleData.totpSecret
+        };
+
+        // 신규 발급 직후 / 관리자가 강제 초기화한 직후라 아직 초기 비밀번호 그대로면, 다른 무엇보다
+        // 먼저 새 비밀번호로 바꾸게 한다. 방금 로그인에서 받은 idToken을 그대로 써서 비밀번호를
+        // 다시 묻지 않는다.
+        if (roleData.mustChangePassword) {
+            pendingLoginUser = user;
+            pendingForcePwToken = authData.idToken;
+            switchView('viewForcePwChange');
+            return;
+        }
+
+        proceedAfterPasswordCheck(user);
+    }
+
+    /** 비밀번호 확인(및 필요 시 강제 변경)까지 끝난 사용자 — OTP는 선택이라 등록해 둔 사람만 한 번 더 확인한다. */
+    function proceedAfterPasswordCheck(user) {
+        if (user.totpSecret) {
+            pendingLoginUser = user;
+            switchView('viewOtpVerify');
+            return;
+        }
+        completeLogin(user);
+    }
+
+    /** 강제 비밀번호 변경 화면 — 새 비밀번호만 받아 바로 적용하고, 표시를 지운 뒤 로그인을 이어간다. */
+    async function confirmForcePwChange() {
+        const newPw = document.getElementById('forcePwNew').value.trim();
+        const btn = document.getElementById('btnForcePwChange');
+        if (!pendingLoginUser || !pendingForcePwToken) return cancelPendingLogin();
+        if (newPw.length < 4) return showMsg('forcePwMsg', '새 비밀번호는 4자리 이상이어야 합니다.');
+
+        btn.disabled = true;
+        showMsg('forcePwMsg', '변경 처리 중...', 'loading');
+
+        try {
+            // returnSecureToken: true — 비밀번호를 바꾸면 Firebase가 그 계정의 기존 토큰(로그인 때
+            // 받아서 저장해 둔 refreshToken 포함)을 전부 무효화한다. 여기서 새로 발급받는 토큰으로
+            // 세션을 다시 세팅하지 않으면, 대시보드 이동 직후 "세션이 만료되었습니다"로 튕겨서
+            // 다시 로그인 → 또 강제 변경 화면 없이도(이미 변경했으니) 같은 자리에서 계속 실패한다.
+            const res = await fetch(`${IDENTITY_TOOLKIT_URL}/accounts:update?key=${FIREBASE_WEB_API_KEY}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ idToken: pendingForcePwToken, password: toFirebasePassword(newPw), returnSecureToken: true })
+            });
+            if (!res.ok) throw new Error('변경 실패');
+            const data = await res.json();
+            establishAuthSession(data.idToken, data.refreshToken, pendingLoginUser.uid);
+        } catch (e) {
+            btn.disabled = false;
+            return showMsg('forcePwMsg', '서버에 연결하지 못했습니다. 네트워크를 확인해주세요.', 'error');
+        }
+
+        // 표시 해제는 실패해도(네트워크 순간 문제 등) 치명적이지 않다 — 다음 로그인 때 한 번 더 물어볼 뿐이다.
+        try {
+            await fetch(authDbUrl(`user_roles/${pendingLoginUser.uid}/mustChangePassword`), { method: 'DELETE' });
+        } catch (e) { /* no-op */ }
+
+        const user = pendingLoginUser;
+        pendingForcePwToken = null;
+        btn.disabled = false;
+        proceedAfterPasswordCheck(user);
+    }
+
+    /** OTP 관리 화면 — 비밀번호로 본인 확인 후 지금 상태를 보여준다. */
+    async function checkOtpManageStatus() {
+        const id = document.getElementById('omId').value.trim();
+        const pw = document.getElementById('omPw').value.trim();
+        const btn = document.getElementById('btnOtpManageCheck');
+        if (!id || !pw) return showMsg('otpManageMsg', '아이디와 비밀번호를 입력해주세요.');
+
+        btn.disabled = true;
+        showMsg('otpManageMsg', '확인 중...', 'loading');
+
+        const authData = await firebaseSignIn(id, pw);
+        if (!authData) {
+            btn.disabled = false;
+            return showMsg('otpManageMsg', '아이디 또는 비밀번호가 일치하지 않습니다.', 'error');
+        }
+        establishAuthSession(authData.idToken, authData.refreshToken, authData.localId);
+
+        let roleData;
+        try { roleData = await (await fetch(authDbUrl(`user_roles/${authData.localId}`))).json(); }
+        catch (e) { roleData = null; }
+        btn.disabled = false;
+
+        if (!roleData) return showMsg('otpManageMsg', '계정 정보를 찾을 수 없습니다.', 'error');
+
+        pendingLoginUser = {
+            id: roleData.originalId, uid: authData.localId, role: roleData.role,
+            perms: roleData.perms || {}, totpSecret: roleData.totpSecret
+        };
+
+        showMsg('otpManageMsg', '', 'success');
+        document.getElementById('otpManageAuthStep').style.display = 'none';
+        document.getElementById('otpManageActionStep').style.display = 'block';
+
+        const enabled = !!pendingLoginUser.totpSecret;
+        document.getElementById('otpManageStatusText').innerText =
+            enabled ? '현재 OTP 2단계 인증이 켜져 있습니다.' : '현재 OTP 2단계 인증이 꺼져 있습니다.';
+        document.getElementById('btnOtpManageEnable').style.display = enabled ? 'none' : 'block';
+        document.getElementById('btnOtpManageDisable').style.display = enabled ? 'block' : 'none';
+    }
+
+    /** 등록 화면(viewOtpSetup)을 그대로 재사용한다 — 확인이 끝나면 그 화면 로직이 바로 로그인까지 완료한다. */
+    async function startOtpManageEnable() {
+        if (!pendingLoginUser) return cancelPendingLogin();
+        await startOtpSetup(pendingLoginUser);
+    }
+
+    async function disableOtpManage() {
+        if (!pendingLoginUser) return cancelPendingLogin();
+        if (!confirm('OTP 2단계 인증을 해제하시겠습니까?')) return;
+
+        try {
+            await fetch(authDbUrl(`user_roles/${pendingLoginUser.uid}/totpSecret`), { method: 'DELETE' });
+        } catch (e) {
+            return showMsg('otpManageMsg', '서버에 연결하지 못했습니다. 네트워크를 확인해주세요.', 'error');
+        }
+
+        showMsg('otpManageMsg', 'OTP 인증이 해제되었습니다. 로그인 화면으로 돌아갑니다...', 'success');
+        setTimeout(() => switchView('viewLogin'), 1200);
+    }
+
+    /** 아이디/비밀번호(+ 필요 시 OTP) 확인이 끝난 사용자로 세션을 열고 대시보드로 이동한다. */
+    function completeLogin(user) {
+        sessionStorage.setItem('gap_logged_in_user', user.id);
+        sessionStorage.setItem('gap_logged_in_role', user.role);
+        // 계정별로 따로 부여받은 권한(예: 사원 명단 관리)
+        sessionStorage.setItem('gap_logged_in_perms', JSON.stringify(user.perms || {}));
+        showMsg('loginMsg', '로그인 성공! 대시보드로 이동합니다...', 'success');
+        setTimeout(() => { window.location.href = 'dashboard.html'; }, 700);
+    }
+
+    /** 아직 OTP 미등록인 Super Admin 계정 — 새 시크릿을 만들어 QR로 보여준다. */
+    async function startOtpSetup(user) {
+        pendingNewSecret = generateTotpSecret();
+        // switchView 가 모든 input 값을 비우므로, 반드시 그 다음에 시크릿을 채워야 한다.
+        switchView('viewOtpSetup');
+        document.getElementById('otpSecretText').value = pendingNewSecret;
+
+        try {
+            const url = totpAuthUrl(pendingNewSecret, user.id);
+            await QRCode.toCanvas(document.getElementById('otpQrCanvas'), url, { width: 200 });
+        } catch (e) {
+            console.error('QR 코드 생성 실패:', e);
+            showMsg('otpSetupMsg', 'QR 코드를 표시하지 못했습니다. 아래 수동 등록 키를 사용해주세요.', 'error');
+        }
+    }
+
+    /** OTP 최초 등록 확인 — 코드가 맞으면 시크릿을 계정에 저장하고 로그인을 완료한다. */
+    async function confirmOtpSetup() {
+        const code = document.getElementById('otpSetupCode').value.trim();
+        const btn = document.getElementById('btnOtpSetupConfirm');
+        if (!pendingLoginUser || !pendingNewSecret) return cancelPendingLogin();
+
+        btn.disabled = true;
+        showMsg('otpSetupMsg', '확인 중...', 'loading');
+
+        if (!(await verifyTotp(pendingNewSecret, code))) {
+            btn.disabled = false;
+            return showMsg('otpSetupMsg', '코드가 일치하지 않습니다. 앱의 시간을 확인 후 다시 시도해주세요.', 'error');
+        }
+
+        try {
+            await fetch(authDbUrl(`user_roles/${pendingLoginUser.uid}/totpSecret`), {
+                method: 'PUT',
+                body: JSON.stringify(pendingNewSecret),
+                headers: { 'Content-Type': 'application/json' }
+            });
+        } catch (e) {
+            btn.disabled = false;
+            return showMsg('otpSetupMsg', '서버에 연결하지 못했습니다. 네트워크를 확인해주세요.', 'error');
+        }
+
+        const user = { ...pendingLoginUser, totpSecret: pendingNewSecret };
+        pendingNewSecret = null;
+        btn.disabled = false;
+        completeLogin(user);
+    }
+
+    /** OTP 등록이 이미 끝난 Super Admin — 앱에 뜬 6자리 코드를 검증한다. */
+    async function verifyOtpAndLogin() {
+        const code = document.getElementById('otpVerifyCode').value.trim();
+        const btn = document.getElementById('btnOtpVerify');
+        if (!pendingLoginUser) return cancelPendingLogin();
+
+        btn.disabled = true;
+        showMsg('otpVerifyMsg', '확인 중...', 'loading');
+
+        if (!(await verifyTotp(pendingLoginUser.totpSecret, code))) {
+            btn.disabled = false;
+            return showMsg('otpVerifyMsg', '인증 코드가 일치하지 않습니다.', 'error');
+        }
+
+        const user = pendingLoginUser;
+        btn.disabled = false;
+        completeLogin(user);
+    }
+
+    async function changePassword() {
+        const id = document.getElementById('cpwId').value.trim();
+        const oldPw = document.getElementById('cpwOld').value.trim();
+        const newPw = document.getElementById('cpwNew').value.trim();
+        const btn = document.getElementById('btnChangePw');
+
+        if (!id || !oldPw || !newPw) return showMsg('pwMsg', '모든 항목을 입력해주세요.');
+        if (oldPw === newPw) return showMsg('pwMsg', '새 비밀번호가 기존 비밀번호와 동일합니다.');
+        if (newPw.length < 4) return showMsg('pwMsg', '새 비밀번호는 4자리 이상이어야 합니다.');
+
+        btn.disabled = true;
+        showMsg('pwMsg', '비밀번호 변경 처리 중...', 'loading');
+
+        // 본인 비밀번호는 본인 확인(현재 비밀번호로 로그인)만 되면 서버 코드 없이 바로 바꿀 수 있다.
+        const authData = await firebaseSignIn(id, oldPw);
+        if (!authData) {
+            btn.disabled = false;
+            return showMsg('pwMsg', '아이디 또는 현재 비밀번호가 틀립니다.', 'error');
+        }
+
+        try {
+            const res = await fetch(`${IDENTITY_TOOLKIT_URL}/accounts:update?key=${FIREBASE_WEB_API_KEY}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ idToken: authData.idToken, password: toFirebasePassword(newPw), returnSecureToken: false })
+            });
+            if (!res.ok) throw new Error('변경 실패');
+
+            // 초기 비밀번호(기본값)를 본인이 직접 바꾼 경우도 "강제 변경 필요" 표시를 지운다 —
+            // 안 지우면 다음 로그인 때 또 강제 변경 화면부터 거치게 된다.
+            try {
+                await fetch(`${DB_ROOT}/user_roles/${authData.localId}/mustChangePassword.json?auth=${authData.idToken}`, { method: 'DELETE' });
+            } catch (e2) { /* no-op — 다음 로그인 때 한 번 더 물어볼 뿐 치명적이지 않다 */ }
+
+            showMsg('pwMsg', '비밀번호가 성공적으로 변경되었습니다!', 'success');
+            setTimeout(() => switchView('viewLogin'), 1500);
+        } catch (e) {
+            showMsg('pwMsg', '서버에 연결하지 못했습니다. 네트워크를 확인해주세요.', 'error');
+        }
+        btn.disabled = false;
+    }
+
+    /* Enter 로 바로 제출 */
+    document.getElementById('loginPw').addEventListener('keypress', e => { if (e.key === 'Enter') doLogin(); });
+    document.getElementById('cpwNew').addEventListener('keypress', e => { if (e.key === 'Enter') changePassword(); });
+    document.getElementById('otpSetupCode').addEventListener('keypress', e => { if (e.key === 'Enter') confirmOtpSetup(); });
+    document.getElementById('otpVerifyCode').addEventListener('keypress', e => { if (e.key === 'Enter') verifyOtpAndLogin(); });
+    document.getElementById('forcePwNew').addEventListener('keypress', e => { if (e.key === 'Enter') confirmForcePwChange(); });
+    document.getElementById('omPw').addEventListener('keypress', e => { if (e.key === 'Enter') checkOtpManageStatus(); });
+</script>
+</body>
+</html>

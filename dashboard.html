@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>gram Analyzer Pro — 진단 대시보드</title>
+    <link rel="icon" type="image/png" href="ico.png">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+    <link rel="stylesheet" href="assets/theme.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="page-dashboard">
+
+<div class="app">
+    <aside class="sidebar" id="sidebar"></aside>
+
+    <div class="main">
+        <header class="topbar">
+            <div class="page-head">
+                <h1>현장의 진단 데이터, <span class="grad">한눈에</span></h1>
+                <p class="sub">전국 서비스매니저의 gram Analyzer Pro 활용 현황을 실시간으로 집계합니다.</p>
+            </div>
+            <div class="topbar-actions">
+                <div class="live-wrap">
+                    <span class="material-symbols-outlined live-active-text" id="liveIcon" style="font-size:16px;">radio_button_checked</span>
+                    <span id="liveStatusText" class="live-active-text">LIVE ON</span>
+                    <label class="switch">
+                        <input type="checkbox" id="liveToggle" onchange="toggleLiveMode()" checked>
+                        <span class="slider"></span>
+                    </label>
+                </div>
+
+                <div class="notif-wrap" id="notifWrap" style="display:none;">
+                    <button class="btn btn-notif" onclick="toggleNotifPanel(event)" title="알림">
+                        <span class="material-symbols-outlined">notifications</span>
+                        <span class="notif-badge" id="notifBadge" style="display:none;">0</span>
+                    </button>
+                    <div class="notif-panel" id="notifPanel" style="display:none;">
+                        <div class="notif-panel-head">
+                            <span>알림 이력</span>
+                            <button class="notif-clear-btn" onclick="markAllNotifRead()">모두 읽음</button>
+                        </div>
+                        <div class="notif-list" id="notifList"></div>
+                    </div>
+                </div>
+
+                <button class="btn btn-theme" onclick="switchTheme()">
+                    <span class="material-symbols-outlined" id="themeIcon">light_mode</span>
+                    <span id="themeText">LIGHT</span>
+                </button>
+
+                <button class="btn btn-logout" onclick="doLogout()">
+                    <span class="material-symbols-outlined">logout</span> 로그아웃
+                </button>
+            </div>
+        </header>
+
+        <div class="content">
+
+            <!-- ── 미등록 사용자 알림 ── -->
+            <div class="alert-banner" id="unregisteredAlert" style="display:none;">
+                <span class="material-symbols-outlined">person_alert</span>
+                <span class="alert-text" id="unregisteredAlertText"></span>
+                <a href="admin.html#employees">사원 명단에서 등록하기</a>
+                <button class="alert-close" onclick="dismissUnregisteredAlert()" title="닫기">
+                    <span class="material-symbols-outlined">close</span>
+                </button>
+            </div>
+
+            <!-- ── 미처리 피드백 알림 ── -->
+            <div class="alert-banner" id="pendingFeedbackAlert" style="display:none;">
+                <span class="material-symbols-outlined">forum</span>
+                <span class="alert-text" id="pendingFeedbackText"></span>
+                <a href="admin.html#feedback">피드백 확인하기</a>
+                <button class="alert-close" onclick="dismissPendingFeedbackAlert()" title="닫기">
+                    <span class="material-symbols-outlined">close</span>
+                </button>
+            </div>
+
+            <!-- ── 기간 필터 ── -->
+            <div class="section-head">
+                <div class="form-row" style="margin:0;">
+                    <select id="datePreset" class="filter-select" onchange="handleDatePreset()">
+                        <option value="all">전체 기간</option>
+                        <option value="today">오늘</option>
+                        <option value="last7">최근 7일</option>
+                        <option value="thisMonth">이번 달</option>
+                        <option value="custom">사용자 지정...</option>
+                    </select>
+                    <div id="customDateRange" class="date-range">
+                        <input type="date" id="startDate" class="date-input" onchange="saveCustomDates(); renderDashboard()"> ~
+                        <input type="date" id="endDate" class="date-input" onchange="saveCustomDates(); renderDashboard()">
+                    </div>
+                    <label style="display:inline-flex; align-items:center; gap:6px; font-size:13px; font-weight:600; color:var(--text-sub); cursor:pointer;">
+                        <input type="checkbox" id="showWeekendCheckbox" onchange="handleWeekendToggle()" style="accent-color:var(--lg-red);"> 주말 표시
+                    </label>
+                </div>
+            </div>
+
+            <!-- ── AI 인사이트 ── -->
+            <div class="ticker-wrap">
+                <div class="ticker-title"><span class="material-symbols-outlined" style="font-size:18px;">electric_bolt</span> AI INSIGHT</div>
+                <div class="ticker-content">
+                    <div class="ticker-move" id="aiTicker">데이터를 수집하여 지능형 분석을 준비 중입니다...</div>
+                </div>
+            </div>
+
+            <!-- ── 핵심 지표 ── -->
+            <div class="kpi-grid">
+                <div class="kpi-card">
+                    <div class="kpi-title"><span class="material-symbols-outlined">data_usage</span> 앱 실행횟수</div>
+                    <div class="kpi-value" id="kpiTotalUsage">0</div>
+                    <div class="kpi-sub">Total Executions</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-title"><span class="material-symbols-outlined">group</span> 사용 인원</div>
+                    <div class="kpi-value" id="kpiTotalUsers">0</div>
+                    <div class="kpi-sub">Active Users</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-title"><span class="material-symbols-outlined">work</span> 최다 사용 담당</div>
+                    <div class="kpi-value sm" id="kpiTopDept">-</div>
+                    <div class="kpi-sub">Top Department</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-title"><span class="material-symbols-outlined">storefront</span> 최다 사용 센터</div>
+                    <div class="kpi-value sm" id="kpiTopCenter">-</div>
+                    <div class="kpi-sub">Top Center</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-title"><span class="material-symbols-outlined">star</span> 최다 사용 기능</div>
+                    <div class="kpi-value sm" id="kpiTopFeature" style="color:var(--lg-orange);">-</div>
+                    <div class="kpi-sub">Top Feature</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-title"><span class="material-symbols-outlined">system_update</span> 가장 많이 쓰인 버전</div>
+                    <div class="kpi-value sm" id="kpiTopVersion">-</div>
+                    <div class="kpi-sub" id="kpiTopVersionSub">Most Used Version</div>
+                </div>
+            </div>
+
+            <!-- ── 차트 · 표 ── -->
+            <div class="dashboard-grid">
+                <div class="card col-span-5">
+                    <h3>
+                        <span class="title-text" id="trendTitle"><span class="material-symbols-outlined">show_chart</span> 앱 실행 추이</span>
+                        <span class="scroll-hint"><span class="material-symbols-outlined">swipe</span> 좌우로 밀어서 보기</span>
+                    </h3>
+                    <div class="scrollable-x-area"><div id="trendChartWrapper"><canvas id="trendChart"></canvas></div></div>
+                </div>
+
+                <div class="card col-span-5">
+                    <h3>
+                        <span class="title-text"><span class="material-symbols-outlined">leaderboard</span> 서비스매니저별 TOP 10</span>
+                        <span class="scroll-hint"><span class="material-symbols-outlined">swipe</span> 좌우로 밀어서 보기</span>
+                    </h3>
+                    <div class="scrollable-x-area"><div id="top10ChartWrapper"><canvas id="top10Chart"></canvas></div></div>
+                </div>
+
+                <div class="card col-span-7">
+                    <h3 title="그래프 막대를 클릭하면 상세 분석 정보를 볼 수 있습니다.">
+                        <span class="title-text"><span class="material-symbols-outlined">pie_chart</span> 세부 기능별 비중</span>
+                        <span style="font-size:11px; color:var(--lg-orange); font-weight:500;">막대 클릭 시 상세 분석</span>
+                    </h3>
+                    <div class="chart-container" id="featureChartBox"><canvas id="featureChart"></canvas></div>
+                </div>
+
+                <div class="card col-span-3">
+                    <h3><span class="title-text"><span class="material-symbols-outlined">donut_large</span> 담당별 비중</span></h3>
+                    <div class="chart-container"><canvas id="deptChart"></canvas></div>
+                </div>
+
+                <div class="card col-span-3">
+                    <h3><span class="title-text"><span class="material-symbols-outlined">calendar_month</span> 요일별 사용 패턴</span></h3>
+                    <div class="chart-container"><canvas id="dowChart"></canvas></div>
+                </div>
+
+                <div class="card col-span-7">
+                    <h3>
+                        <span class="title-text"><span class="material-symbols-outlined">corporate_fare</span> 센터별 사용 비중</span>
+                        <span class="scroll-hint"><span class="material-symbols-outlined">swipe</span> 좌우로 밀어서 보기</span>
+                    </h3>
+                    <div class="scrollable-x-area"><div id="centerChartWrapper"><canvas id="centerChart"></canvas></div></div>
+                </div>
+
+                <div class="card col-span-10">
+                    <h3>
+                        <span class="title-text"><span class="material-symbols-outlined">table_rows</span> 상세 RAW DATA <span style="font-size:11px; color:var(--text-sub); font-weight:500;">(행 클릭 시 개인 프로필 조회)</span></span>
+                        <span class="scroll-hint"><span class="material-symbols-outlined">swipe</span> 좌우로 밀어서 보기</span>
+                        <div class="table-header-controls" style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+                            <div class="search-wrap">
+                                <span class="material-symbols-outlined">search</span>
+                                <input type="search" id="searchInput" class="search-input" placeholder="이름, 담당, 센터 검색..." oninput="handleSearch()" autocomplete="off">
+                            </div>
+                            <button id="btnDeleteRaw" class="btn btn-logout btn-sm" style="display:none;" onclick="deleteSelectedRawData()">
+                                <span class="material-symbols-outlined">delete</span> 선택 삭제
+                            </button>
+                            <button id="btnExportCsv" class="btn btn-export-csv btn-sm" style="display:none;" onclick="downloadCSV()">
+                                <span class="material-symbols-outlined">download</span> CSV
+                            </button>
+                        </div>
+                    </h3>
+                    <div class="table-container">
+                        <table id="dataTable">
+                            <thead>
+                                <tr>
+                                    <th onclick="handleSort(0, false)">사원번호</th>
+                                    <th onclick="handleSort(1, false)">이름</th>
+                                    <th onclick="handleSort(2, false)">담당</th>
+                                    <th onclick="handleSort(3, false)">센터</th>
+                                    <th onclick="handleSort(4, true)">기간 내 실행</th>
+                                    <th onclick="handleSort(5, false)">최근 버전</th>
+                                    <th onclick="handleSort(6, false)">최종 사용시간</th>
+                                </tr>
+                            </thead>
+                            <tbody id="allUsersTbody"></tbody>
+                        </table>
+                    </div>
+                    <div class="pagination" id="paginationArea"></div>
+                </div>
+            </div>
+
+            <div class="footer">&copy; 2026 gyunam Jeon. All rights reserved.</div>
+        </div>
+    </div>
+</div>
+
+<!-- 개인 프로필 -->
+<div id="userModal" class="modal">
+    <div class="modal-content">
+        <span class="close-btn" onclick="closeModal()">&times;</span>
+        <div class="modal-header">
+            <h2 id="mName"><span class="material-symbols-outlined">account_circle</span> 이름</h2>
+            <p id="mInfo">소속 정보</p>
+        </div>
+        <div class="modal-kpi">
+            <div class="m-kpi-box"><span>총 사용 횟수</span><strong id="mCount">0</strong></div>
+            <div class="m-kpi-box"><span>최애 기능</span><strong id="mBestFeature" style="color:var(--lg-blue);">-</strong></div>
+            <div class="m-kpi-box"><span>마지막 사용</span><strong id="mLastDate" style="color:var(--lg-red); font-size:17px;">-</strong></div>
+        </div>
+
+        <h3 style="color:var(--text-sub); font-size:13px; margin:0 0 10px;">기능 활용 내역 (선택 기간)</h3>
+        <div id="mFeatureList" style="margin-bottom:20px; display:flex; flex-wrap:wrap; gap:5px;"></div>
+
+        <h3 style="color:var(--text-sub); font-size:13px; margin:0 0 10px;">이 서비스매니저의 일별 사용 추이 (선택 기간)</h3>
+        <div style="height:250px; position:relative; width:100%;">
+            <canvas id="modalChart"></canvas>
+        </div>
+    </div>
+</div>
+
+<!-- 기능별 상세 분석 (드릴다운) -->
+<div id="featureDetailModal" class="modal" style="z-index:2000;">
+    <div class="modal-content" style="width:820px;">
+        <span class="close-btn" onclick="document.getElementById('featureDetailModal').style.display='none'">&times;</span>
+        <div class="modal-header">
+            <h2>
+                <span class="material-symbols-outlined" style="color:var(--lg-orange);">insights</span> <span id="fdModalTitle">기능 상세 분석</span>
+                <!-- PC 상세정보/PC 점검하기/롬라이팅처럼 하위 세부 항목이 있는 기능일 때만 보인다.
+                     제목 바로 옆에 붙이고(margin-left:auto 없음), close-btn(×)과는 멀리 있어 안 겹친다. -->
+                <button id="fdGroupBtn" class="admin-action-btn" style="display:none; margin-left:10px;" onclick="openFeatureDetailGroupBtn()">기능상세</button>
+            </h2>
+            <p>선택한 기간 동안 해당 기능을 가장 많이 사용한 그룹입니다.</p>
+        </div>
+        <div style="display:flex; gap:24px; flex-wrap:wrap;">
+            <div style="flex:1; min-width:250px;">
+                <h3 style="font-size:13px; color:var(--text-main); border-bottom:2px solid var(--border-color); padding-bottom:8px; margin:0 0 12px; display:flex; justify-content:space-between;">
+                    🏆 TOP 사용자 <span style="font-size:11px; color:var(--text-sub); font-weight:500;">(횟수)</span>
+                </h3>
+                <div id="fdTopUsers" class="fd-list"></div>
+            </div>
+            <div style="flex:1; min-width:250px;">
+                <h3 style="font-size:13px; color:var(--text-main); border-bottom:2px solid var(--border-color); padding-bottom:8px; margin:0 0 12px; display:flex; justify-content:space-between;">
+                    🏢 TOP 센터 <span style="font-size:11px; color:var(--text-sub); font-weight:500;">(횟수)</span>
+                </h3>
+                <div id="fdTopCenters" class="fd-list"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 상위 메뉴의 세부 기능 비중 (예: 'PC 상세정보' 클릭 → 온라인/오프라인/RDPK 등 하위 항목) -->
+<div id="featureGroupModal" class="modal" style="z-index:2000;">
+    <div class="modal-content" style="width:640px;">
+        <span class="close-btn" onclick="document.getElementById('featureGroupModal').style.display='none'">&times;</span>
+        <div class="modal-header">
+            <h2><span class="material-symbols-outlined" style="color:var(--lg-orange);">list_alt</span> <span id="fgModalTitle">세부 기능 비중</span></h2>
+            <p>막대를 클릭하면 그 세부 기능을 쓴 사람을 볼 수 있습니다.</p>
+        </div>
+        <div id="featureGroupEmpty" class="empty-state" style="display:none;">선택한 기간에 사용 기록이 없습니다.</div>
+        <div id="featureGroupChartBox" class="chart-container" style="height:220px;"><canvas id="featureGroupChart"></canvas></div>
+    </div>
+</div>
+
+<script src="assets/common.js"></script>
+<script src="assets/fcm-sender-config.js"></script>
+<script src="assets/fcm-send.js"></script>
+<script src="assets/push.js"></script>
+<script src="assets/dashboard.js"></script>
+</body>
+</html>
